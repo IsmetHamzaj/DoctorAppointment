@@ -106,4 +106,42 @@ router.post('/apply-doctor-account', authMiddleware, async (req, res) => {
 })
 
 
+router.post('/mark-all-notifications-as-seen', authMiddleware, async (req, res) => {
+    try {
+       const user = await User.findOne({_id: req.body.userId})
+       const unseenNotifications = user.unseenNotifications
+       user.seenNotifications = unseenNotifications
+       user.unseenNotifications = []
+       const updatedUser = await User.findByIdAndUpdate(user._id, user)
+       updatedUser.password = undefined
+       res.status(200).send({
+        success: true,
+        message: "All notifications marked as seen",
+        data: updatedUser
+       })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({ message: "Errorr applying for doctor", success: false, error })
+    }
+})
+
+
+router.post('/delete-all-notifications', authMiddleware, async (req, res) => {
+    try {
+       const user = await User.findOne({_id: req.body.userId})
+       user.seenNotifications = []
+       user.unseenNotifications = []
+       const updatedUser = await User.findByIdAndUpdate(user._id, user)
+       updatedUser.password = undefined
+       res.status(200).send({
+        success: true,
+        message: "All notifications marked as seen",
+        data: updatedUser
+       })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({ message: "Errorr applying for doctor", success: false, error })
+    }
+})
+
 module.exports = router
