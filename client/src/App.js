@@ -10,6 +10,9 @@ import ProtectedRoute from "./Components/protectedRoutes";
 import PublicRoute from "./Components/publicRoute";
 import ApplyDoctor from "./pages/ApplyDoctor";
 import Notifications from "./pages/Notifications";
+import UsersList from './pages/Admin/UsersList'
+import DoctorsList from './pages/Admin/DoctorsList'
+
 function App() {
   const { loading } = useSelector(state => state.alerts)
   return (
@@ -30,6 +33,12 @@ function App() {
         </ProtectedRoute>} />
         <Route path="/notifications" element={<ProtectedRoute>
           <Notifications />
+        </ProtectedRoute>} />
+        <Route path="/admin/users" element={<ProtectedRoute>
+          <UsersList />
+        </ProtectedRoute>} />
+        <Route path="/admin/doctors" element={<ProtectedRoute>
+          <DoctorsList />
         </ProtectedRoute>} />
       </Routes>
     </BrowserRouter>

@@ -2,15 +2,19 @@ const express = require('express')
 const app = express();
 require('dotenv').config()
 const dbConfig = require('./config/dbConfig')
+const userRoute = require('./routes/userRoute')
+const adminRoute = require('./routes/adminRoutes')
+const bodyParser = require("body-parser")
+
+
+app.use(bodyParser.json())
+
+app.use('/api/user', userRoute)
+app.use('/api/admin', adminRoute)
 
 
 app.use(express.json())
-
-const userRoute = require('./routes/userRoute')
-app.use('/api/user', userRoute)
-
-
-
+app.use(express.urlencoded({ extended: false }));
 
 
 

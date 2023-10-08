@@ -40,17 +40,17 @@ function Layout({ children }) {
         },
         {
             name: "Profile",
-            path: "/profile",
+            path: "/admin/profile",
             icon: "ri-user-line"
         },
         {
             name: 'Users',
-            path: '/users',
+            path: '/admin/users',
             icon: 'ri-user-line'
         },
         {
             name: "Doctors",
-            path: '/doctors',
+            path: '/admin/doctors',
             icon: "ri-user-star-line"
         },
     ]
