@@ -87,7 +87,7 @@ router.post('/apply-doctor-account', authMiddleware, async (req, res) => {
         const unseenNotifications = adminUser.unseenNotifications
         unseenNotifications.push({
             type: "new-doctor-request",
-            messasge: `${newDoctor.firstName} ${newDoctor.lastName} has applied for a doctor account`,
+            message: `${newDoctor.firstName} ${newDoctor.lastName} has applied for a doctor account`,
             data: {
                 doctorId: newDoctor._id,
                 name: newDoctor.firstName + " " + newDoctor.lastName
@@ -110,9 +110,11 @@ router.post('/mark-all-notifications-as-seen', authMiddleware, async (req, res) 
     try {
        const user = await User.findOne({_id: req.body.userId})
        const unseenNotifications = user.unseenNotifications
-       user.seenNotifications = unseenNotifications
+       const seenNotifications = user.seenNotifications
+       seenNotifications.push(...unseenNotifications)
        user.unseenNotifications = []
-       const updatedUser = await User.findByIdAndUpdate(user._id, user)
+       user.seenNotifications = seenNotifications
+       const updatedUser = await user.save()
        updatedUser.password = undefined
        res.status(200).send({
         success: true,
@@ -131,11 +133,11 @@ router.post('/delete-all-notifications', authMiddleware, async (req, res) => {
        const user = await User.findOne({_id: req.body.userId})
        user.seenNotifications = []
        user.unseenNotifications = []
-       const updatedUser = await User.findByIdAndUpdate(user._id, user)
+       const updatedUser = await user.save()
        updatedUser.password = undefined
        res.status(200).send({
         success: true,
-        message: "All notifications marked as seen",
+        message: "All notifications deleted",
         data: updatedUser
        })
     } catch (error) {

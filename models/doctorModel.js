@@ -2,10 +2,6 @@ const mongoose = require('mongoose')
 
 const doctorSchema = new mongoose.Schema(
     {
-        userId: {
-            type: String,
-            required: true
-        },
         firstName: {
             type: String,
             required: true
@@ -40,7 +36,7 @@ const doctorSchema = new mongoose.Schema(
         },
         consultationHours: {
             type: Object,
-            required: true
+            required: false
         },
         timings: {
             type: Array,

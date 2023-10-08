@@ -40,7 +40,7 @@ function ApplyDoctor() {
         }
 
         catch (error) {
-            console.log("gabim")
+            console.log(error)
         }
     }
     return (
