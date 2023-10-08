@@ -42,7 +42,7 @@ function Register() {
                     <Form.Item label='Password:' name='password'>
                         <Input placeholder='Password' type='password' />
                     </Form.Item>
-                    <Button className='primary-button my-2' htmlType='submit'>REGISTER</Button>
+                    <Button className='primary-button my-2 full-width-button' htmlType='submit'>REGISTER</Button>
                     <Link to='/login' className='anchor mt-2'>CLICK HERE TO LOGIN</Link>
                 </Form>
             </div>

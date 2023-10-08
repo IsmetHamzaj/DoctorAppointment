@@ -9,17 +9,17 @@ import { hideLoading, showLoading } from '../redux/alertsSlice'
 const Login = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const onFinish = async(values) => {
-        try{
+    const onFinish = async (values) => {
+        try {
             dispatch(showLoading())
             const response = await axios.post('/api/user/login', values)
             dispatch(hideLoading())
-            if(response.data.success) {
+            if (response.data.success) {
                 toast.success(response.data.message)
                 toast("Redirecting to home page")
                 localStorage.setItem("token", response.data.data)
                 navigate("/")
-            }else {
+            } else {
                 dispatch(hideLoading())
                 toast.error(response.data.message)
             }
@@ -28,7 +28,7 @@ const Login = () => {
             toast.error("Something went wrong")
         }
     }
-    return(
+    return (
         <div className='auth'>
             <div className='register-form card p-3'>
                 <h1 className='card-title'>Welcome back</h1>
@@ -37,9 +37,9 @@ const Login = () => {
                         <Input placeholder='Email' type='email' />
                     </Form.Item>
                     <Form.Item label='Password:' name='password'>
-                        <Input placeholder='Password' type='password'/>
+                        <Input placeholder='Password' type='password' />
                     </Form.Item>
-                    <Button className='primary-button my-2' htmlType='submit'>Log In</Button>
+                    <Button className='primary-button my-2 full-width-button' htmlType='submit'>Log In</Button>
                     <Link className='anchor mt-2' to='/register'>CLICK HERE TO REGISTER</Link>
                 </Form>
             </div>

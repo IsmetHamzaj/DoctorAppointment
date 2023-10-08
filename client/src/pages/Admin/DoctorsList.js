@@ -4,6 +4,7 @@ import { hideLoading, showLoading } from '../../redux/alertsSlice'
 import axios from 'axios'
 import Layout from '../../Components/Layout'
 import { Table } from 'antd'
+import { toast } from 'react-hot-toast'
 
 function DoctorsList() {
     const [doctors, setDoctors] = useState([])
@@ -23,6 +24,27 @@ function DoctorsList() {
 
             }
         } catch (error) {
+            dispatch(hideLoading())
+        }
+    }
+
+
+    const changeDoctorStatus = async (record, status) => {
+
+        try {
+            dispatch(showLoading())
+            const response = await axios.post("/api/admin/change-doctor-status", { doctorId: record._id, userId: record.userId, status: status }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            })
+            dispatch(hideLoading())
+            if (response.data.success) {
+                toast.success(response.data.message)
+                getDoctorsData()
+            }
+        } catch (error) {
+            toast.error("Something went wrong")
             dispatch(hideLoading())
         }
     }
@@ -60,7 +82,7 @@ function DoctorsList() {
             render: (text, record) => {
                 return (
                     <div className='d-flex'>
-                        {record.status === "pending" ?  (<h1 className='anchor'>Approve</h1>) : (<h1 className='anchor'>Block</h1>)}
+                        {record.status === "pending" ? (<h1 className='anchor' onClick={() => changeDoctorStatus(record, 'approved')}>Approve</h1>) : (<h1 className='anchor' onClick={() => changeDoctorStatus(record, 'blocked')}>Block</h1>)}
                         {/* {record.status === "pending" && <h1 className='anchor'>Approve</h1>}
                         {record.status === "approved" && <h1 className='anchor'>Block</h1>} */}
                     </div>
