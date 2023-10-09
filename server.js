@@ -5,12 +5,14 @@ const dbConfig = require('./config/dbConfig')
 const userRoute = require('./routes/userRoute')
 const adminRoute = require('./routes/adminRoutes')
 const bodyParser = require("body-parser")
+const doctorRoute = require("./routes/doctorsRoute")
 
 
 app.use(bodyParser.json())
 
 app.use('/api/user', userRoute)
 app.use('/api/admin', adminRoute)
+app.use('/api/doctor', doctorRoute)
 
 
 app.use(express.json())
