@@ -46,10 +46,13 @@ label {
 }
 
 .card {
-  box-shadow: 0 0 2px gray;
+  box-shadow: 0 0 2px rgb(189,188,188);
   border-radius: 0 !important;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
 
 .spinner-parent {
   display: flex;
@@ -83,6 +86,12 @@ label {
 
 .full-width-button {
   width: 100% !important;
+}
+
+p {
+  color: rgba(0, 0, 0, 0.63) !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .anchor {

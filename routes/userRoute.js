@@ -14,7 +14,7 @@ router.post('/register', async (req, res) => {
                 .status(200)
                 .send({ message: "User already exists", success: false })
         }
-        const password = req.body.password
+        const password = req.body?.password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt)
         req.body.password = hashedPassword
@@ -145,5 +145,26 @@ router.post('/delete-all-notifications', authMiddleware, async (req, res) => {
         res.status(500).send({ message: "Errorr applying for doctor", success: false, error })
     }
 })
+
+
+router.get("/get-all-approved-doctors", authMiddleware, async (req, res) => {
+    try {
+        const doctors = await Doctor.find({status: "approved"})
+        res.status(200).send({
+            message: "Doctors fetched successfully",
+            success: true,
+            data: doctors
+        })
+    }
+    catch (error) {
+        console.log(error)
+        res.status(500).send({
+            message: "Error applying doctor account",
+            success: false,
+            error
+        })
+    }
+})
+
 
 module.exports = router

@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast'
 import { showLoading, hideLoading } from './../../redux/alertsSlice'
 import { useNavigate, useParams } from 'react-router-dom'
 import DoctorForm from './../../Components/DoctorForm'
+import moment from 'moment'
 
 function Profile() {
     const dispatch = useDispatch()
@@ -17,13 +18,15 @@ function Profile() {
     const navigate = useNavigate()
     const onFinish = async (values) => {
         try {
-
             dispatch(showLoading())
 
             const response = await axios.post(
                 "/api/doctor/update-doctor-profile",
                 {
-                    ...values, userId: user._id
+                    ...values, userId: user._id, timings: [
+                        moment(values.timings[0]).format("HH:mm"),
+                        moment(values.timings[1]).format("HH:mm")
+                    ]
                 }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
