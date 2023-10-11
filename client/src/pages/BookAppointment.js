@@ -11,7 +11,7 @@ import toast from 'react-hot-toast'
 function BookAppointment() {
     const [isAvailabale, setIsAvailable] = useState(false)
     const [date, setDate] = useState()
-    const [selectedTimings, setSelectedTimings] = useState()
+    const [time, setTime] = useState()
     const { user } = useSelector((state) => state.user)
     const params = useParams()
     const dispatch = useDispatch()
@@ -31,24 +31,31 @@ function BookAppointment() {
             dispatch(hideLoading())
             if (response.data.success) {
                 setDoctor(response.data.data)
-            }
-            else {
-                localStorage.clear()
-                navigate("/login")
+                console.log(response.data.data)
             }
         } catch (error) {
             dispatch(hideLoading())
         }
     }
 
-    const bookNow =  async () => {
+    useEffect(() => {
+        getDoctorData()
+    }, [])
+
+    const bookNow = async () => {
         try {
+            // if (!date || !time) {
+            //     toast.error("Please select a date and time.");
+            //     return;
+            // }
             dispatch(showLoading())
-            const response = await axios.post('/api/doctor/book-appointment', {
+            const response = await axios.post('/api/user/book-appointment' , {
                 doctorId: params.doctorId,
-                userId: user._id,
+                userId: user ? user._id : null,
+                doctorInfo: doctor,
+                userInfo: user,
                 date: date,
-                selectedTimings: selectedTimings
+                time: time
             }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -63,10 +70,7 @@ function BookAppointment() {
             dispatch(hideLoading())
         }
     }
-
-    useEffect(() => {
-        getDoctorData()
-    }, [])
+    console.log(user)
     return (
         <Layout>
             {doctor && (
@@ -77,12 +81,11 @@ function BookAppointment() {
                         <Col span={8} sm={24} xs={24} lg={8}>
                             <h1 className='normal-text'><b>Timings: </b> {doctor.timings[0]} - {doctor.timings[1]}</h1>
                             <div className='d-flex flex-column pt-2'>
-                                <DatePicker format="DD-MM-YYYY" onChange={(value) => setDate(moment(value).format("DD-MM-YYYY"))} />
-                                <TimePicker.RangePicker format="HH:mm" className='mt-3' onChange={(values) => {
-                                    setSelectedTimings([
-                                        moment(values[0]).format("HH:mm"),
-                                        moment(values[1]).format("HH:mm")
-                                    ])
+                                <DatePicker format="DD-MM-YYYY" name='date' onChange={(value) => setDate(moment(value).format("DD-MM-YYYY"))} />
+                                <TimePicker format="HH:mm" className='mt-3' name='time' onChange={(value) => {
+                                    setTime(
+                                        moment(value).format("HH:mm")
+                                    )
                                 }} />
                                 <Button className='primary-button mt-3 full-width-button'>Check Availability</Button>
                                 <Button className='primary-button mt-3 full-width-button' onClick={bookNow}>Book Now</Button>

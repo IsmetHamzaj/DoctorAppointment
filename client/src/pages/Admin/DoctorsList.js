@@ -33,7 +33,7 @@ function DoctorsList() {
 
         try {
             dispatch(showLoading())
-            const response = await axios.post("/api/admin/change-doctor-status", { doctorId: record._id, userId: record.userId, status: status }, {
+            const response = await axios.post("/api/admin/change-doctor-account-status", { doctorId: record._id, userId: record.userId, status: status }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
