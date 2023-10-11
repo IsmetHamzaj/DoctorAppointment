@@ -17,7 +17,6 @@ function BookAppointment() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [doctor, setDoctor] = useState(null)
-
     const getDoctorData = async () => {
         try {
             dispatch(showLoading())
@@ -38,10 +37,6 @@ function BookAppointment() {
         }
     }
 
-    useEffect(() => {
-        getDoctorData()
-    }, [])
-
     const bookNow = async () => {
         try {
             // if (!date || !time) {
@@ -51,7 +46,7 @@ function BookAppointment() {
             dispatch(showLoading())
             const response = await axios.post('/api/user/book-appointment' , {
                 doctorId: params.doctorId,
-                userId: user ? user._id : null,
+                userId: user._id,
                 doctorInfo: doctor,
                 userInfo: user,
                 date: date,
@@ -70,7 +65,35 @@ function BookAppointment() {
             dispatch(hideLoading())
         }
     }
-    console.log(user)
+
+    const checkAvailability = async () => {
+        try {
+            dispatch(showLoading())
+            const response = await axios.post('/api/user/check-booking-availability' , {
+                doctorId: params.doctorId,
+                date: date,
+                time: time
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            dispatch(hideLoading())
+            if (response.data.success) {
+                toast.success(response.data.message)
+            } else {
+                toast.error(response.data.message)
+            }
+        } catch (error) {
+            toast.error("Error booking appointment")
+            dispatch(hideLoading())
+        }
+    }
+
+    useEffect(() => {
+        getDoctorData()
+    }, [])
+    console.log(doctor)
     return (
         <Layout>
             {doctor && (
@@ -82,12 +105,8 @@ function BookAppointment() {
                             <h1 className='normal-text'><b>Timings: </b> {doctor.timings[0]} - {doctor.timings[1]}</h1>
                             <div className='d-flex flex-column pt-2'>
                                 <DatePicker format="DD-MM-YYYY" name='date' onChange={(value) => setDate(moment(value).format("DD-MM-YYYY"))} />
-                                <TimePicker format="HH:mm" className='mt-3' name='time' onChange={(value) => {
-                                    setTime(
-                                        moment(value).format("HH:mm")
-                                    )
-                                }} />
-                                <Button className='primary-button mt-3 full-width-button'>Check Availability</Button>
+                                <TimePicker format="HH:mm" className='mt-3' name='time' onChange={(value) => {setTime(moment(value).format("HH:mm"))}} />
+                                <Button className='primary-button mt-3 full-width-button' onClick={checkAvailability}>Check Availability</Button>
                                 <Button className='primary-button mt-3 full-width-button' onClick={bookNow}>Book Now</Button>
                             </div>
                         </Col>

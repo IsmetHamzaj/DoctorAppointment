@@ -51,6 +51,7 @@ router.post("/change-doctor-account-status", authMiddleware, async (req, res) =>
             status
         })
         const user = await User.findOne({ _id: doctor.userId })
+        console.log(user)
         const unseenNotifications = user.unseenNotifications
 
         unseenNotifications.push({

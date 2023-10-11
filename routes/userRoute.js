@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router();
 const User = require('../models/userModel')
+const moment = require('moment')
 const Doctor = require("../models/doctorModel")
 const Appointment = require("./../models/appointmentModel")
 const bcrypt = require('bcryptjs')
@@ -172,8 +173,10 @@ router.post("/book-appointment", authMiddleware, async (req, res) => {
     try {
         req.body.status = "pending"
         const newAppointment = new Appointment(req.body)
+        // req.body.doctorInfo.userId = req.body.doctorInfo._id;
         await newAppointment.save()
-        const user = await User.findOne({_id: req.body.doctorInfo.userId})
+        const user = await User.findOne({ _id: req.body.doctorInfo.userId})
+        console.log(user)
         // user.unseenNotifications = []
         user.unseenNotifications.push({
             type: "new-appointment-request",
@@ -196,6 +199,42 @@ router.post("/book-appointment", authMiddleware, async (req, res) => {
         })
     }
 })
+
+
+
+router.post("/check-booking-availability", authMiddleware, async (req, res) => {
+    try {
+        const date = moment(req.body.date, 'DD-MM-YYYY').toISOString()
+        const fromTime = moment(req.body.time, 'HH:mm').subtract(60, 'minuts').toISOString()
+        const toTime = moment(req.body.time, 'HH:mm').add(60, 'minuts').toISOString()
+        const doctorId = req.body.doctorId
+        const appointments = await Appointment.find({
+            doctorId,
+            date,
+            time: { $gte: fromTime, $lte: toTime },
+            status: "approved"
+        })
+        if (appointments.length > 0) {
+            return res.status(200).send({
+                message: "Appointment not available",
+                success: false
+            })
+        } else {
+            return res.status(200).send({
+                message: "Appointment available",
+                success: true
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            message: "Error booking appointment",
+            success: false,
+            error: error
+        })
+    }
+})
+
 
 
 module.exports = router
